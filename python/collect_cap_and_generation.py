@@ -15,6 +15,7 @@ for period in os.listdir(modeldir):
         print("collect data of model {} for period {}".format(model, period))
         network_d = os.path.join(modeldir,period)
         network = pypsa.Network(network_d)
+        
         ### capacity/generation shares
         cap_share = network.generators.p_nom_opt.groupby(network.generators.carrier).sum() # per carrier
         gen_share = network.generators_t.p.groupby(network.generators.carrier, axis=1).sum().sum() # per carrier
