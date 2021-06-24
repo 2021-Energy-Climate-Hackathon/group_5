@@ -3,6 +3,10 @@ import pypsa
 import pandas as pd
 import numpy as np
 
+import warnings
+warnings.filterwarnings("ignore")
+import logging
+logging.getLogger("pypsa").setLevel(level=logging.CRITICAL)  # ignore WARNING and below
 
 basedir = '/gws/pw/j05/cop26_hackathons/oxford/Group_folders/group_5/data/schlott_material'
 for model in ['ICHEC','CNRM','MPI']:
@@ -14,6 +18,8 @@ for model in ['ICHEC','CNRM','MPI']:
         print("collect data of model {} for period {}".format(model, period))
         network_d = os.path.join(modeldir,period)
         network = pypsa.Network(network_d)
+
+        if network.generators_t.p.empty: continue
 
         ### levelized cost of electricity
         investments = network.generators.p_nom_opt * network.generators.capital_cost
@@ -28,8 +34,8 @@ for model in ['ICHEC','CNRM','MPI']:
         investments_per_carrier_and_node = investments.groupby([network.generators.bus, network.generators.carrier]).sum()
 
         lcoe = (investments.sum() + operation.sum()) / network.loads_t.p_set.sum().sum() # for whole system
-        lcoe_per_carrier = (investments_per_carrier.sum() + operation_per_carrier.sum()) / generation_per_carrier.sum() # per carrier
-        lcoe_per_carrier_and_node = ((investments_per_carrier_and_node.sum() + operation_per_carrier_and_node.sum()) / 
+        lcoe_per_carrier = (investments_per_carrier + operation_per_carrier) / generation_per_carrier.sum() # per carrier
+        lcoe_per_carrier_and_node = ((investments_per_carrier_and_node + operation_per_carrier_and_node) / 
                             generation_per_carrier_and_node.sum()) # per carrier and bus
 
         if lcoe_all is None:
