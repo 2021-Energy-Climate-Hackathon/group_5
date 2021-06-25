@@ -11,3 +11,10 @@
 - Investigate differences in results of power systems simulations stored in the data folder (more simulation will be added throughout the week).
 - Link differences in results to differences in input data
 - Transform further met data to energy data (using the atlite package).
+
+## About the data stored here
+- Note that the raw data, and `pickle` files generated from the raw data, that
+  were ued in the analyses have not been included in this repository because
+  they are very large in data size and we do not want to make the repository
+  very slow to load. Therefore the data directory as-is only contains some CSV
+  files generated from the raw data.
